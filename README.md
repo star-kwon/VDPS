@@ -34,9 +34,9 @@ Ex) CUDA 10.2 with pytorch 1.7.0
 ### 1) Clone the repository
 
 ```
-git clone https://github.com/video-through-scattering2023/video-through-scattering
+git clone https://github.com/star-kwon/VDPS-optica
 
-cd video-through-scattering
+cd VDPS-optica
 ```
 
 <br />
@@ -58,9 +58,9 @@ mv {SAMPLE_DOWNLOAD_DIR}/{SAMPLES} ./{scatter samples}/
 Install dependencies
 
 ```
-conda create -n VTS python=3.10
+conda create -n VDPS python=3.10
 
-conda activate VTS
+conda activate VDPS
 
 pip install -r requirements.txt
 
