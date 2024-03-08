@@ -70,6 +70,8 @@ pip install torch==1.13.1+cu117 torchvision==0.14.1+cu117 torchaudio==0.13.1 --e
 <br />
 
 ### 4) Test
+Run test code for simulation experiments.
+The real measurement reconstruction results in video format are in the 'video_results' folder.
 
 ```
 python test_UCF.py
