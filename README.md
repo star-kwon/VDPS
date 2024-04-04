@@ -1,8 +1,6 @@
 # Video Reconstruction Through Dynamic Scattering Medium via Spatio-Temporal Diffusion Models
 
-<p align="center" width="100%">
-    <img src='./supplementary videos/ReconstructionResultsforUCF101.gif' width='100%'>
-</p>
+
 
 <p align="center" width="100%">
     <img width="10%" src="./figures/UCF_measurement.gif">
@@ -15,6 +13,11 @@
     <img width="67%" src="./figures/cover.jpg">
 </p>
 
+## Supplementary Videos
+<p align="center" width="100%">
+    <img src='./supplementary videos/ReconstructionResultsforUCF101.gif' width='49%'>
+    <img src='./supplementary videos/ReconstructionResultsforVISEM-Tracking.gif' width='49%'>
+</p>
 
 ## Abstract
 We present a novel inverse scattering solver utilizing a video diffusion model for imaging through highly scattering media. By deriving a closed-form forward model from the shower-curtain effect, we introduce a video diffusion posterior sampling scheme with temporal attention, maximizing the statistical correlation between frames and scattered signals. Our approach demonstrates adaptability across diverse scenarios, including various scene types, scattering media thicknesses, and scene-medium distances. Emphasizing the incorporation of temporal correlation, our method accurately captures high-frequency components often missed by spatial-domain operations alone. Simulation and real experimental results using different datasets and optical setups validate the effectiveness of our approach. To the best of our knowledge, this is the first video diffusion model to exploit correlations in both spatial and temporal domains for solving the inverse scattering problem.
