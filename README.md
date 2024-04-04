@@ -1,7 +1,7 @@
 # Video Reconstruction Through Dynamic Scattering Medium via Spatio-Temporal Diffusion Models
 
 <p align="center" width="100%">
-    <video src='./supplementary videos/ReconstructionResultsforUCF101.gif' width='100%'>
+    <img src='./supplementary videos/ReconstructionResultsforUCF101.gif' width='100%'>
 </p>
 
 <p align="center" width="100%">
