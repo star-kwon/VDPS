@@ -34,9 +34,9 @@ Ex) CUDA 10.2 with pytorch 1.7.0
 ### 1) Clone the repository
 
 ```
-git clone https://github.com/star-kwon/VDPS-optica
+git clone https://github.com/star-kwon/VDPS
 
-cd VDPS-optica
+cd VDPS
 ```
 
 <br />
