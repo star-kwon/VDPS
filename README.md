@@ -1,6 +1,10 @@
 # Video Reconstruction Through Dynamic Scattering Medium via Spatio-Temporal Diffusion Models
 
 <p align="center" width="100%">
+    <video src='./supplementary videos/Reconstruction Results for VISEM-Tracking.gif' width=180/>
+</p>
+
+<p align="center" width="100%">
     <img width="10%" src="./figures/UCF_measurement.gif">
     <img width="10%" src="./figures/UCF_output.gif">
     <img width="20%" src="./figures/VISEM_measurement.gif">
