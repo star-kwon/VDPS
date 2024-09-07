@@ -9,11 +9,8 @@
 ## Overview
 
 <p align="center" width="100%">
-    <img width="50%" src="./figures/cover.jpg">
-</p>
-
-<p align="center" width="100%">
-    <img width="67%" src="./figures/illustration.jpg">
+    <img width="33%" src="./figures/cover.jpg">
+    <img width="66%" src="./figures/illustration.jpg">
 </p>
 
 <p align="center" width="100%">
