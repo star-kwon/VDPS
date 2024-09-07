@@ -1,4 +1,4 @@
-# Video Reconstruction Through Dynamic Scattering Medium via Spatio-Temporal Diffusion Models
+# Video Reconstruction Beyond Dynamic Scattering Medium
 
 ## Supplementary Videos
 <p align="center" width="100%">
@@ -9,7 +9,11 @@
 ## Overview
 
 <p align="center" width="100%">
-    <img width="67%" src="./figures/cover.jpg">
+    <img width="50%" src="./figures/cover.jpg">
+</p>
+
+<p align="center" width="100%">
+    <img width="67%" src="./figures/illustration.jpg">
 </p>
 
 <p align="center" width="100%">
