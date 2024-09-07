@@ -20,7 +20,15 @@
 </p>
 
 ## Abstract
-In many optical imaging applications, optical scattering randomly disturbs light propagation, posing the challenge of recovering well-resolved images from scattered signals. Existing computational approaches for inverse scattering solvers rely on statistical or empirical constraints in the spatial domain, often failing to recover temporally coherent frames of dynamic scenes. Here, with a closed-form forward model for a dynamic scattering medium of finite thickness, we implement a video diffusion posterior sampling scheme with temporal attention, maximizing the statistical correlation between frames and scattered signals. By incorporating temporal correlation, our method accurately captures high-resolution components that are missed in spatial-domain operations alone. Furthermore, with explicit modeling of spatio-temporal correlation, our approach demonstrates adaptability across diverse scenarios, including various scene types, scattering media thicknesses, and scene-medium distances. Numerical validation and real experimental results using various datasets and optical configurations validate the effectiveness of our approach. To the best of our knowledge, this is the first video diffusion model to exploit correlations in both spatial and temporal domains for solving the inverse scattering problem.
+Imaging through scattering is challenging because even a very thin layer of scattering material can randomly disturb light propagation, making it appear opaque and obscuring objects behind it. 
+The forward model of light scattering is complex and difficult to express in a closed form due to its inherent randomness, and the problem becomes even more challenging as the scattering media’s thickness increases and becomes dynamic. 
+In this work, we present an approximated forward model for dynamic scattering media with finite thickness. 
+To reconstruct videos through such media, we propose a plug-and-play inverse scattering solver using video diffusion models.
+Our approach extends diffusion posterior sampling (DPS) to the spatio-temporal domain, enhancing statistical correlations between frames and scattered signals.
+By incorporating temporal correlations, our method accurately reconstructs high-resolution details that are often missed by spatial-domain approaches. 
+Furthermore, our method demonstrates adaptability across diverse scenarios, including different scene types, scattering media thicknesses, and scene-medium distances. 
+Numerical validation and real experimental results using various datasets and optical configurations validate the effectiveness of our approach. 
+Our work demonstrates robustness to real-world noise and approximated forward model mismatches, showing its applicability to practical inverse problems in real-world settings
 
 
 ## Prerequisites
@@ -86,3 +94,11 @@ python test_VISEM.py
 ```
 
 <br />
+
+### 5) Data and materials availability
+
+The full data and materials used in this study are available from the corresponding authors upon request.
+
+<br />
+
+
