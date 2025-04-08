@@ -4,7 +4,9 @@ This repository is the official implementation of "Diffusion-based Video Reconst
 
 [Taesung Kwon](https://star-kwon.github.io/), [Gookho Song](https://scholar.google.com/citations?user=YJQV1tgAAAAJ&hl=en), [Yoosun Kim](https://scholar.google.com/citations?user=AHILv2QAAAAJ&hl=en), [Jeongsol Kim](https://jeongsol.dev/), [Jong Chul Ye](https://bispl.weebly.com/professor.html), and [Mooseok Jang](https://scholar.google.com/citations?user=QYPGDkAAAAAJ&hl=en).
 
-![main figure](figures/cover.jpg)
+<p align="center">
+  <img src="figures/cover.jpg" alt="main figure" width="70%">
+</p>
 
 <p align="center" width="100%">
     <img width="20%" src="./figures/UCF_measurement.gif" alt="UCF Measurement">
