@@ -1,105 +1,113 @@
-# Video Reconstruction Beyond Dynamic Scattering Medium
+# Diffusion-based Video Reconstruction Beyond Dynamic Scattering Layer
 
-## Supplementary Videos
+This repository is the official implementation of "Diffusion-based Video Reconstruction Beyond Dynamic Scattering Layer", led by
+
+[Taesung Kwon](https://star-kwon.github.io/), [Gookho Song](https://scholar.google.com/citations?user=YJQV1tgAAAAJ&hl=en), [Yoosun Kim](https://scholar.google.com/citations?user=AHILv2QAAAAJ&hl=en), [Jeongsol Kim](https://jeongsol.dev/), [Jong Chul Ye](https://bispl.weebly.com/professor.html), and [Mooseok Jang](https://scholar.google.com/citations?user=QYPGDkAAAAAJ&hl=en).
+
+![main figure](figures/cover.jpg)
+
+<p align="center" width="100%">
+    <img width="20%" src="./figures/UCF_measurement.gif" alt="UCF Measurement">
+    <img width="20%" src="./figures/UCF_output.gif" alt="UCF Output">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <img width="20%" src="./figures/VISEM_measurement.gif" alt="VISEM Measurement">
+    <img width="20%" src="./figures/VISEM_output.gif" alt="VISEM Output">
+</p>
+
+---
+## 🔥 Summary
+**Imaging through scattering layer** is inherently challenging, as even a thin scattering layer can randomly perturb light propagation, rendering the scene opaque and obscuring objects behind it.
+In this work, we propose an approximate forward model tailored for a **dynamic scattering layer with finite thickness**.
+
+To reconstruct videos through such layer, we introduce **VDPS**, a plug-and-play inverse scattering solver powered by video diffusion models.
+
+Our main contributions are as follows:
+
+1. **We demonstrate that leveraging temporal correlations significantly improves spatial reconstruction, achieving state-of-the-art restoration performance.**
+2. **We propose a novel inference-time optimization strategy that enables simultaneous estimation of forward-model parameters without requiring additional training.**
+3. **Beyond inverse scattering, we show that VDPS is also effective in video dehazing, deblurring, inpainting, and blind PSF restoration via Zernike coefficient estimation.**
+
+## 🛠️ Setup
+First, create your environment. We recommend using the following comments. 
+```
+git clone https://github.com/star-kwon/VDPS.git
+cd VDPS
+conda env create -f environment.yaml
+```
+
+## 📂 Data preperation
+
+For reproducibility, we provide the same dataset used in the official implementation.
+Please download the datasets from the following [download link](https://drive.google.com/file/d/1GkuzyTmId2LjGu3bOQNKTm0MDA8aqTSS/view?usp=sharing).
+
+After downloading, place the data folder in the root directory of the repository.
+The directory structure should be as follows:
+```
+VDPS/
+├── data/
+│   ├── DAVIS_Test/
+│   ├── UCF101_Test/
+│   ├── Real_Test/
+│   └── VISEM_Test/
+├── ...
+```
+
+## 🎯 Download Checkpoints
+
+We also provide the checkpoints used in the official implementation.
+Please download the checkpoints from the following [download link](https://drive.google.com/file/d/1BHm6v41HT7AHxV18qYyK_DM5e1n-KIpi/view?usp=sharing).
+
+After downloading, place the checkpoints in results folder in the root directory of the repository.
+The directory structure should be as follows:
+```
+VDPS/
+├── results/
+│   ├── model-100.1.pt
+│   └── model-100.2.pt
+├── ...
+```
+
+'model-100.1.pt' is the pretrained weight of the video diffusion model for the UCF101 and DAVIS datasets.
+
+'model-100.2.pt' is the pretrained weight of the video diffusion model for the VISEM-Tracking dataset.
+
+
+## ▶️ Usage
+
+### Sec. 3.2 .Restoration from known degradation
+```
+python -m eval --deg physics --dist 5.0 --sigma 1.0 --dataset DAVIS
+```
+Supported datasets: 'DAVIS', 'UCF101', 'VISEM'
+
+### Sec. 3.2. Restoration from blind degradation
+```
+python -m eval_blind --dist_min 2.5 --dist_max 5 --sigma_min 0.5 --sigma_max 1
+```
+[Note]
+If min and max values are set to the same number, the corresponding parameter is treated as fixed during restoration.
+For example:
+* dist_min 5.0 --dist_max 5.0 → distance is fixed
+* sigma_min 1.0 --sigma_max 1.0 → sigma is fixed
+
+### Sec. 3.3-4. Restoration from real measurements
+```
+python -m eval_blind_real --dataset Real
+```
+
+### Sec. 3.5. Restoration from diverse forward models
+```
+python -m eval --deg dehaze
+```
+Supported degradations: 'dehaze', 'inpaint', 'blur'
+
+### Sec. 3.5. Restoration from blind PSF using Zernike coefficent
+```
+python -m eval_blind_zernike
+```
+
+## 🎥 Supplementary Videos
 <p align="center" width="100%">
     <img src='./supplementary videos/ReconstructionResultsforUCF101.gif' width='49%'>
     <img src='./supplementary videos/ReconstructionResultsforVISEM-Tracking.gif' width='49%'>
 </p>
-
-## Overview
-
-<p align="center" width="100%">
-    <img width="33%" src="./figures/cover.jpg">
-    <img width="66%" src="./figures/illustration.jpg">
-</p>
-
-<p align="center" width="100%">
-    <img width="10%" src="./figures/UCF_measurement.gif">
-    <img width="10%" src="./figures/UCF_output.gif">
-    <img width="20%" src="./figures/VISEM_measurement.gif">
-    <img width="20%" src="./figures/VISEM_output.gif">
-</p>
-
-## Abstract
-Imaging through scattering is challenging because even a very thin layer of scattering material can randomly disturb light propagation, making it appear opaque and obscuring objects behind it. 
-The forward model of light scattering is complex and difficult to express in a closed form due to its inherent randomness, and the problem becomes even more challenging as the scattering media’s thickness increases and becomes dynamic. 
-In this work, we present an approximated forward model for dynamic scattering media with finite thickness. 
-To reconstruct videos through such media, we propose a plug-and-play inverse scattering solver using video diffusion models.
-Our approach extends diffusion posterior sampling (DPS) to the spatio-temporal domain, enhancing statistical correlations between frames and scattered signals.
-By incorporating temporal correlations, our method accurately reconstructs high-resolution details that are often missed by spatial-domain approaches. 
-Furthermore, our method demonstrates adaptability across diverse scenarios, including different scene types, scattering media thicknesses, and scene-medium distances. 
-Numerical validation and real experimental results using various datasets and optical configurations validate the effectiveness of our approach. 
-Our work demonstrates robustness to real-world noise and approximated forward model mismatches, showing its applicability to practical inverse problems in real-world settings
-
-
-## Prerequisites
-- python 3.10
-
-- pytorch 1.13.1
-
-- CUDA 11.7
-
-It is okay to use lower version of CUDA with proper pytorch version.
-
-Ex) CUDA 10.2 with pytorch 1.7.0
-
-<br />
-
-## Getting started 
-
-### 1) Clone the repository
-
-```
-git clone https://github.com/star-kwon/VDPS
-
-cd VDPS
-```
-
-<br />
-
-### 2) Download pretrained checkpoint and sample videos
-From the [link](https://drive.google.com/drive/folders/1-Zu7GL2dooGFJYEO34s9U0J03LKqd6I6?usp=sharing), download the checkpoints and paste it to ./models/, download the samples and paste it to ./scatter samples/
-```
-mkdir models
-mkdir scatter samples
-mv {MODEL_DOWNLOAD_DIR}/{CHECKPOINT NAME} ./{models}/
-mv {SAMPLE_DOWNLOAD_DIR}/{SAMPLES} ./{scatter samples}/
-```
-{DOWNLOAD_DIR} is the directory that you downloaded checkpoint to.
-{PASTE_DIR} is the directory that you should paste to.
-
-<br />
-
-### 3) Set environment
-Install dependencies
-
-```
-conda create -n VDPS python=3.10
-
-conda activate VDPS
-
-pip install -r requirements.txt
-
-pip install torch==1.13.1+cu117 torchvision==0.14.1+cu117 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu117
-```
-
-<br />
-
-### 4) Test
-Run test code for simulation experiments.
-The real measurement reconstruction results in video format are in the 'video_results' folder.
-
-```
-python test_UCF.py
-python test_VISEM.py
-```
-
-<br />
-
-### 5) Data and materials availability
-
-The full data and materials used in this study are available from the corresponding authors upon request.
-
-<br />
-
-
