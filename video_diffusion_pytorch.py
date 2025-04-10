@@ -148,6 +148,17 @@ class MappingNet_Zernike(nn.Module):
     def forward(self, input):
         return torch.tanh(self.fc2(self.gelu(self.fc1(input)))).unsqueeze(-1).unsqueeze(-1).unsqueeze(-1) * torch.pi
 
+class MappingNet_Zernike_varying(nn.Module):
+    def __init__(self):
+        super(MappingNet_Zernike_varying, self).__init__()
+
+        self.fc1 = nn.Linear(256, 128)
+        self.fc2 = nn.Linear(128, 100)
+        self.gelu = nn.ELU(alpha=0.5)
+
+    def forward(self, input):
+        return torch.tanh(self.fc2(self.gelu(self.fc1(input)))).unsqueeze(-1).unsqueeze(-1).unsqueeze(-1) * torch.pi
+
 class MappingNet(nn.Module):
     def __init__(self):
         super(MappingNet, self).__init__()
@@ -439,6 +450,53 @@ class forward_model_unknown_zernike(torch.nn.Module):
             list_frame.append(blurred_frame.unsqueeze(0))
 
         forwarded_video = torch.cat(list_frame, axis=2)
+
+        return forwarded_video, psf
+
+class forward_model_unknown_zernike_varying(torch.nn.Module):
+    def __init__(self, size=64, device='cuda'):
+        super().__init__()
+
+        # Get zernike basis
+        self.size = size
+        self.zernike_maps = generate_zernike_map(size, n_max=4)
+        self.device = device
+
+        # Select a few Zernike modes to visualize  
+        selected_modes = [(0, 0), (1, -1), (1, 1), (2, -2), (2, 0), (2, 2), (3, -3), (3, -1), (3, 1), (3, 3)]
+        self.zmap_basis = get_zernike_maps(self.zernike_maps, selected_modes).unsqueeze(1).to(device)
+
+    def forward(self, video, zernike_basis):
+        t = video.shape[2]
+
+        video = unnormalize_img(video)
+        video = video.clip(0, 1)
+        list_frame = []
+        psf_frame = []
+
+        for i in range(t):
+            frame = video[:, :, i]
+
+            # Generate the PSF for each frame
+            w_gt = zernike_basis[i*10:(i+1)*10]
+            pupil_phase = torch.sum(w_gt * self.zmap_basis, dim=0).unsqueeze(0)
+            pupil_amp = generate_amp_mask(self.size).to(self.device) / self.size**2
+            pupil = pupil_amp * torch.exp(1j * pupil_phase) 
+
+            sim_dim = self.size * 2
+            pupil_pad = torch_pad_center(pupil, (sim_dim, sim_dim)) 
+            psf = torch_fft(pupil_pad).abs() ** 2 
+            psf = torch_crop_center(psf, self.size)
+
+            # Apply the PSF to the frame           
+            blurred_frame = F.conv2d(frame, psf.to(self.device), padding="same")
+            blurred_frame = torch_crop_center(blurred_frame.to(self.device), 64)
+
+            list_frame.append(blurred_frame.unsqueeze(0))
+            psf_frame.append(psf)
+
+        forwarded_video = torch.cat(list_frame, axis=2)
+        psf = torch.cat(psf_frame, axis=1)
 
         return forwarded_video, psf
 
@@ -1131,7 +1189,7 @@ class GaussianDiffusion(nn.Module):
         return unnormalize_img(out), forwarded_recon
     
     def physics_informed_sample_blind_zernike(self, measurement_video, cond=None, cond_scale=1.):
-        initial_param = nn.Parameter(torch.zeros(128, requires_grad=True, device="cuda"))
+        initial_param = nn.Parameter(torch.zeros(256, requires_grad=True, device="cuda"))
         mapping_net = MappingNet_Zernike().cuda()
         optimizer = torch.optim.Adam(mapping_net.parameters(), lr=1e-2, betas=(0.9, 0.999))
         
@@ -1156,6 +1214,48 @@ class GaussianDiffusion(nn.Module):
             zernike_basis = mapping_net(initial_param)
 
             forwarded_recon, psf = forward_model_unknown_zernike(size=32)(x_recon, zernike_basis)
+
+            diff = torch.linalg.norm(target_video - forwarded_recon) / 10
+
+            guide = torch.autograd.grad(diff, video, retain_graph=True)[0]
+            video = out - guide
+
+            video = video.detach_()
+            target_video = target_video.detach_()
+
+            loss = torch.mean((target_video - forwarded_recon)**2)
+            loss.backward(retain_graph=True)
+
+            optimizer.step()
+
+        return unnormalize_img(out), zernike_basis, psf
+
+    def physics_informed_sample_blind_zernike_varying(self, measurement_video, cond=None, cond_scale=1.):
+        initial_param = nn.Parameter(torch.zeros(128, requires_grad=True, device="cuda"))
+        mapping_net = MappingNet_Zernike_varying().cuda()
+        optimizer = torch.optim.Adam(mapping_net.parameters(), lr=1e-2, betas=(0.9, 0.999))
+        
+        device = next(self.denoise_fn.parameters()).device
+        video = torch.randn([1, self.channels, self.num_frames, self.image_size, self.image_size], device=device)
+        
+        b, c, t, h, w = video.shape
+        target_video = measurement_video.detach()
+        device = self.betas.device
+        
+        pbar = tqdm(reversed(range(0, self.num_timesteps)), desc='sampling loop time step',
+                    total=self.num_timesteps)
+        for i in pbar:
+            optimizer.zero_grad()
+
+            video.requires_grad_(True)
+            target_video.requires_grad_(True)
+
+            out, x_recon = self.p_sample(video, torch.full((b,), i, device=device, dtype=torch.long),
+                                            cond=cond, cond_scale=cond_scale)
+
+            zernike_basis = mapping_net(initial_param)
+
+            forwarded_recon, psf = forward_model_unknown_zernike_varying(size=32)(x_recon, zernike_basis)
 
             diff = torch.linalg.norm(target_video - forwarded_recon) / 10
 
@@ -1570,9 +1670,9 @@ class Dataset_VISEM(data.Dataset):
         self.channels = channels
 
         if train:
-            self.paths = sorted([p for ext in exts for p in Path(f'{folder}').glob(f'**/*.{ext}')])
+            self.paths = [p for ext in exts for p in Path(f'{folder}').glob(f'**/*.{ext}')]
         else:
-            self.paths = sorted([p for ext in exts for p in Path(f'{folder}').glob(f'**/*.{ext}')])
+            self.paths = [p for ext in exts for p in Path(f'{folder}').glob(f'**/*.{ext}')]
 
         self.num_frames = num_frames
         self.frame_skip = frame_skip
@@ -2122,6 +2222,55 @@ class Trainer(object):
             image.save(psf_path)
 
         print('Zernike PSF blind reconstruction completed')
+
+    def eval_zernike_blind_varying(self):
+        for sample in range(len(self.ds_test)):
+            data, folder_name = next(self.dl_test)
+            target = data.cuda()
+
+            zernike_basis = torch.randn(100, 1, 1, 1).cuda() * 2
+            
+            measurement, psf_gt = forward_model_unknown_zernike_varying(size=32)(normalize_img(target), zernike_basis=zernike_basis)
+            for i in range(1):
+                target_list = []
+                measurement_list = []
+                output_list = []
+
+                output, _, psf = self.ema_model.physics_informed_sample_blind_zernike_varying(measurement)
+            
+            folder_name = folder_name[0]
+
+            output_path = self.results_folder / 'zernike_varying_results'
+            os.makedirs(output_path, exist_ok=True)
+
+            target_list.append(target.squeeze(0))
+            measurement_list.append(measurement.squeeze(0))
+            output_list.append(output[0])
+
+            target_list = torch.cat(target_list, dim=0)
+            measurement_list = torch.cat(measurement_list, dim=0)
+            measurement_list = measurement_list - measurement_list.min() 
+            measurement_list = measurement_list / measurement_list.max()
+            output_list = torch.cat(output_list, dim=0)
+
+            video_path = str(output_path / f'{folder_name}_target.gif')
+            video_tensor_to_gif(target_list, video_path)
+
+            video_path = str(output_path / f'{folder_name}_measurement.gif')
+            video_tensor_to_gif(measurement_list, video_path)
+
+            video_path = str(output_path / f'{folder_name}_output.gif')
+            video_tensor_to_gif(output_list, video_path)
+
+            psf_gt = (psf_gt - psf_gt.min()) / (psf_gt.max() - psf_gt.min())
+            video_path = str(output_path / f'{folder_name}_psf_gt.gif')
+            video_tensor_to_gif(psf_gt, video_path)
+            
+            psf = (psf - psf.min()) / (psf.max() - psf.min())
+            video_path = str(output_path / f'{folder_name}_psf_estimate.gif')
+            video_tensor_to_gif(psf, video_path)
+
+        print('Zernike PSF varying blind reconstruction completed')
 
     def eval_physics_informed_real(self):
         for sample in range(len(self.ds_test)):
