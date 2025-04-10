@@ -106,8 +106,8 @@ python -m eval_blind_zernike
 
 python -m eval_blind_zernike_varying
 ```
-* `eval_blind_zernike` restores the PSF by simultaneously estimating static Zernike coefficients.
-* `eval_blind_zernike_varying` restores the PSF by simultaneously estimating time-varying Zernike coefficients.
+* `eval_blind_zernike` simultaneously restores the PSF by estimating static Zernike coefficients.
+* `eval_blind_zernike_varying` simultaneously restores the PSF by estimating time-varying Zernike coefficients.
 
 ## 🎥 Supplementary Videos
 <p align="center" width="100%">
