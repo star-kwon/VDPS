@@ -118,7 +118,7 @@ python -m eval_blind_zernike_varying
 </p>
 
 <p align="center" width="100%">
-    <img src='./supplementary videos/Reconstruction_Results_for_Diverse_Forward_Models.gif' width='33%'>
-    <img src='./supplementary videos/Reconstruction_Results_for_Blind_PSF.gif' width='33%'>
-    <img src='./supplementary videos/Reconstruction_Results_for_Blind_Time_Varying_PSF.gif' width='33%'>
+    <img src='./supplementary videos/Reconstruction_Results_for_Diverse_Forward_Models.gif' width='33%' style="vertical-align: top;">
+    <img src='./supplementary videos/Reconstruction_Results_for_Blind_PSF.gif' width='32%' style="vertical-align: top;">
+    <img src='./supplementary videos/Reconstruction_Results_for_Blind_Time_Varying_PSF.gif' width='32%' style="vertical-align: top;">
 </p>
