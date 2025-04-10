@@ -1670,9 +1670,9 @@ class Dataset_VISEM(data.Dataset):
         self.channels = channels
 
         if train:
-            self.paths = [p for ext in exts for p in Path(f'{folder}').glob(f'**/*.{ext}')]
+            self.paths = sorted([p for ext in exts for p in Path(f'{folder}').glob(f'**/*.{ext}')])
         else:
-            self.paths = [p for ext in exts for p in Path(f'{folder}').glob(f'**/*.{ext}')]
+            self.paths = sorted([p for ext in exts for p in Path(f'{folder}').glob(f'**/*.{ext}')])
 
         self.num_frames = num_frames
         self.frame_skip = frame_skip
@@ -1705,9 +1705,9 @@ class Dataset_Test_Processed(data.Dataset):
         self.image_size = image_size
         self.channels = channels
         if train == True:
-            self.paths = [p for p in sorted(Path(f'{folder}').glob('*/*/*'))]
+            self.paths = sorted([p for p in sorted(Path(f'{folder}').glob('*/*/*'))])
         else:
-            self.paths = [p for p in sorted(Path(f'{folder}').glob('*/*/*'))]
+            self.paths = sorted([p for p in sorted(Path(f'{folder}').glob('*/*/*'))])
         self.num_frames = num_frames
         self.frame_skip = frame_skip
         self.cast_num_frames_fn = partial(cast_num_frames, frames = num_frames) if force_num_frames else identity
