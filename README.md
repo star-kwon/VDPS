@@ -116,3 +116,9 @@ python -m eval_blind_zernike_varying
     <img src='./supplementary videos/ReconstructionResultsforUCF101.gif' width='49%'>
     <img src='./supplementary videos/ReconstructionResultsforVISEM-Tracking.gif' width='49%'>
 </p>
+
+<p align="center" width="100%">
+    <img src='./supplementary videos/Reconstruction_Results_for_Diverse_Forward_Models.gif' width='33%'>
+    <img src='./supplementary videos/Reconstruction_Results_for_Blind_PSF.gif' width='33%'>
+    <img src='./supplementary videos/Reconstruction_Results_for_Blind_Time_Varying_PSF.gif' width='33%'>
+</p>
