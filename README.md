@@ -4,16 +4,14 @@ This repository is the official implementation of "Diffusion-based Video Reconst
 
 [Taesung Kwon](https://star-kwon.github.io/), [Gookho Song](https://scholar.google.com/citations?user=YJQV1tgAAAAJ&hl=en), [Yoosun Kim](https://scholar.google.com/citations?user=AHILv2QAAAAJ&hl=en), [Jeongsol Kim](https://jeongsol.dev/), [Jong Chul Ye](https://bispl.weebly.com/professor.html), and [Mooseok Jang](https://scholar.google.com/citations?user=QYPGDkAAAAAJ&hl=en).
 
-<p align="center">
-  <img src="figures/cover.jpg" alt="main figure" width="50%">
-</p>
+![main figure](figures/cover.jpg)
 
 <p align="center" width="100%">
-    <img width="15%" src="./figures/UCF_measurement.gif" alt="UCF Measurement">
-    <img width="15%" src="./figures/UCF_output.gif" alt="UCF Output">
+    <img width="20%" src="./figures/UCF_measurement.gif" alt="UCF Measurement">
+    <img width="20%" src="./figures/UCF_output.gif" alt="UCF Output">
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <img width="15%" src="./figures/VISEM_measurement.gif" alt="VISEM Measurement">
-    <img width="15%" src="./figures/VISEM_output.gif" alt="VISEM Output">
+    <img width="20%" src="./figures/VISEM_measurement.gif" alt="VISEM Measurement">
+    <img width="20%" src="./figures/VISEM_output.gif" alt="VISEM Output">
 </p>
 
 ---
@@ -69,9 +67,8 @@ VDPS/
 ├── ...
 ```
 
-'model-100.1.pt' is the pretrained weight of the video diffusion model for the UCF101 and DAVIS datasets.
-
-'model-100.2.pt' is the pretrained weight of the video diffusion model for the VISEM-Tracking dataset.
+* `model-100.1.pt` is the pretrained weight of the video diffusion model for the UCF101 and DAVIS datasets.
+* `model-100.2.pt` is the pretrained weight of the video diffusion model for the VISEM-Tracking dataset.
 
 
 ## ▶️ Usage
@@ -103,10 +100,14 @@ python -m eval --deg dehaze
 ```
 Supported degradations: 'dehaze', 'inpaint', 'blur'
 
-### Sec. 3.5. Restoration from blind PSF using Zernike coefficent
+### Sec. 3.5. Restoration from blind PSF using Zernike coefficents
 ```
 python -m eval_blind_zernike
+
+python -m eval_blind_zernike_varying
 ```
+* `eval_blind_zernike` restores the PSF by simultaneously estimating static Zernike coefficients.
+* `eval_blind_zernike_varying` restores the PSF by simultaneously estimating time-varying Zernike coefficients.
 
 ## 🎥 Supplementary Videos
 <p align="center" width="100%">
