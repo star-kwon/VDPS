@@ -27,7 +27,7 @@ Our main contributions are as follows:
 
 1. **We demonstrate that leveraging temporal correlations significantly improves spatial reconstruction, achieving state-of-the-art restoration performance.**
 2. **We propose a novel inference-time optimization strategy that enables simultaneous estimation of forward-model parameters without requiring additional training.**
-3. **Beyond inverse scattering, we show that VDPS is also effective in video dehazing, deblurring, inpainting, and blind PSF restoration via Zernike coefficient estimation.**
+3. **Beyond inverse scattering, we show that VDPS is also effective in video dehazing, deblurring, inpainting, and blind PSF restoration via Zernike polynomial estimation.**
 
 ## 🛠️ Setup
 First, create your environment. We recommend using the following comments. 
@@ -102,8 +102,8 @@ python -m eval_blind_zernike
 
 python -m eval_blind_zernike_varying
 ```
-* `eval_blind_zernike` simultaneously restores the PSF by estimating static Zernike coefficients.
-* `eval_blind_zernike_varying` simultaneously restores the PSF by estimating time-varying Zernike coefficients.
+* `eval_blind_zernike` simultaneously restores the PSF by estimating static Zernike polynomials.
+* `eval_blind_zernike_varying` simultaneously restores the PSF by estimating time-varying Zernike polynomials.
 
 ### Sec. 3.5. Restoration from diverse forward models
 ```
