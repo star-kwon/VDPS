@@ -96,12 +96,6 @@ For example:
 python -m eval_blind_real --dataset Real
 ```
 
-### Sec. 3.5. Restoration from diverse forward models
-```
-python -m eval --deg dehaze
-```
-Supported degradations: 'dehaze', 'inpaint', 'blur'
-
 ### Sec. 3.5. Restoration from blind PSF using Zernike coefficents
 ```
 python -m eval_blind_zernike
@@ -110,6 +104,12 @@ python -m eval_blind_zernike_varying
 ```
 * `eval_blind_zernike` simultaneously restores the PSF by estimating static Zernike coefficients.
 * `eval_blind_zernike_varying` simultaneously restores the PSF by estimating time-varying Zernike coefficients.
+
+### Sec. 3.5. Restoration from diverse forward models
+```
+python -m eval --deg dehaze
+```
+Supported degradations: 'dehaze', 'inpaint', 'blur'
 
 ## 🎥 Supplementary Videos
 <p align="center" width="100%">
