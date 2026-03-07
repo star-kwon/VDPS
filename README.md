@@ -1,6 +1,6 @@
-# Diffusion-based Video Reconstruction Beyond Dynamic Scattering Layer
+# [IEEE TPAMI] Video Diffusion Posterior Sampling for Seeing Beyond Dynamic Scattering Layers
 
-This repository is the official implementation of "Diffusion-based Video Reconstruction Beyond Dynamic Scattering Layer", led by
+This repository is the official implementation of "Video Diffusion Posterior Sampling for Seeing Beyond Dynamic Scattering Layers", led by
 
 [Taesung Kwon](https://star-kwon.github.io/), [Gookho Song](https://scholar.google.com/citations?user=YJQV1tgAAAAJ&hl=en), [Yoosun Kim](https://scholar.google.com/citations?user=AHILv2QAAAAJ&hl=en), [Jeongsol Kim](https://jeongsol.dev/), [Jong Chul Ye](https://bispl.weebly.com/professor.html), and [Mooseok Jang](https://scholar.google.com/citations?user=QYPGDkAAAAAJ&hl=en).
 
